@@ -1,0 +1,111 @@
+@import 'tailwindcss';
+
+/*
+ * 色と動きの決まり。部品ではここの名前だけを使い、値をじかに書かない（eslint の tailwind の検査と test/design-rules.test.ts）。
+ * 色はどれも仮置き。絵が入るまでの、人物を箱で表した段階の見た目
+ */
+@theme {
+  --color-bg: #15111b;
+  --color-surface: #221b2c;
+  --color-line: #3b3049;
+  --color-fg: #f2ebf8;
+  --color-muted: #a597b3;
+  --color-accent: #d0507a;
+  --color-luck: #e8c547;
+  --color-hp: #5bc06f;
+  --color-foe: #d9534f;
+
+  /* 戦闘の1手の長さ。src/lib/motion.ts の HIT_MS と同じ値にする */
+  --duration-hit: 600ms;
+  --duration-sway: 2400ms;
+
+  --animate-sway: sway var(--duration-sway) ease-in-out infinite;
+  --animate-lunge: lunge var(--duration-hit) ease-out;
+  --animate-shake: shake var(--duration-hit) ease-out;
+  --animate-pop: pop var(--duration-hit) ease-out forwards;
+
+  @keyframes sway {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0);
+    }
+    50% {
+      transform: translateY(-4px) rotate(-1.5deg);
+    }
+  }
+
+  /* 向きは .fighter-hero と .fighter-foe が --lunge-x と --lunge-y で決める */
+  @keyframes lunge {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    35% {
+      transform: translate(var(--lunge-x), var(--lunge-y));
+    }
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    40% {
+      transform: translateX(-6px);
+    }
+    60% {
+      transform: translateX(6px);
+    }
+    80% {
+      transform: translateX(-3px);
+    }
+  }
+
+  @keyframes pop {
+    0% {
+      opacity: 0;
+      transform: translateY(0);
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-32px);
+    }
+  }
+}
+
+/* 横の画面では主人公が左、敵が右。縦の画面では敵が上、主人公が下（CLAUDE.md） */
+.fighter-hero {
+  --lunge-x: 48px;
+  --lunge-y: 0;
+}
+.fighter-foe {
+  --lunge-x: -48px;
+  --lunge-y: 0;
+}
+@media (orientation: portrait) {
+  .fighter-hero {
+    --lunge-x: 0;
+    --lunge-y: -40px;
+  }
+  .fighter-foe {
+    --lunge-x: 0;
+    --lunge-y: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fighter-hero,
+  .fighter-foe {
+    --lunge-x: 0;
+    --lunge-y: 0;
+  }
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+}

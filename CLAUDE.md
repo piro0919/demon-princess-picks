@@ -2,7 +2,7 @@
 
 A browser game where the only thing the player does is pick one of three options. Battles run on their own; the player picks after each battle and on every other square, and tries to reach the last boss.
 
-Nothing is built yet. Everything below was agreed with the owner in a sounding-board session on 2026-10-17 (in the home window; the log is `~/.claude/projects/-Users-piro/50474f48-0d6f-449f-a628-0c5e9128e54e.jsonl`). Do not change the spec, the look or the name without the owner's word.
+A first playable build exists (boxes instead of art, provisional numbers). Everything below, except the Provisional section, was agreed with the owner in a sounding-board session on 2026-10-17 (in the home window; the log is `~/.claude/projects/-Users-piro/50474f48-0d6f-449f-a628-0c5e9128e54e.jsonl`). Do not change the spec, the look or the name without the owner's word.
 
 ## The core
 
@@ -69,10 +69,52 @@ Nothing is built yet. Everything below was agreed with the owner in a sounding-b
 - Different enemy kinds per section (for now)
 - Names with "Doom" (owner disliked it). "The Devil's Daughter …" clashes with Sherlock Holmes: The Devil's Daughter (2016)
 
+### Tech (agreed 2026-10-17)
+
+- Next.js + TypeScript + pnpm + Tailwind, the same base as Vocafy (lint, lefthook, vitest)
+- No game engine. Sway and lunges are CSS transforms. All battle drawing lives in `src/components/battle-stage.tsx`, so it can be swapped for PixiJS inside the battle frame if effects get heavy
+- Game logic is pure TypeScript in `src/game/`, separate from the screen. Every function takes a state and returns a new one; the random generator's state is part of the run, so a seed replays the same run
+- No server, no DB: nothing carries over between runs
+
+## Code layout
+
+- `src/game/balance.ts` — every balance number, and nothing else holds them
+- `src/game/run.ts` — the run: opening picks, stepping, squares, picks, battles, end
+- `src/game/battle.ts` — auto battle, computed to the end before it is shown
+- `test/balance.test.ts` — bots play 1,000 runs and check the targets below. Change numbers in `balance.ts`, then run `pnpm test`
+
+## Design rules
+
+- Colors and motion lengths are named in the `@theme` of `src/app/globals.css`; components use the names only (eslint's tailwind check and `test/design-rules.test.ts`)
+- One battle step is `--duration-hit` in CSS and `HIT_MS` in `src/lib/motion.ts`; keep them equal (tested)
+- Until the art exists, characters are boxes with their name
+
+## Provisional (Claude's placeholders, not agreed)
+
+The first playable build needed values for everything below. They are placeholders to be replaced with the owner's word:
+
+- 12 squares per section, then the boss. Square mix: battle 45, treasure 10, stat up 10, stat down 8, heal 12, random 15
+- SPD: both sides fill a gauge by their SPD and act when it is full
+- Damage: ATK² / (ATK + DEF), ±15%. DEF works as a ratio, so damage never drops to zero
+- LUCK: each of the three slots rolls for the better list at 10% + 4% per LUCK (cap 80%); random squares turn into treasure or heal more often. A LUCK mark shows on any option or square that LUCK caused
+- "Now" options grow 60% per section; "each time" upgrades do not
+- Enemy names "Enemy A/B/C" and "Boss 1/2/3", the heroine shown as "Princess", the screen texts ("Before the journey", "Victory", "Curse", "Spring" …) and all colors
+- Balance targets the tests hold: pressing without thinking clears 3–30% of runs and dies in section 1 in 20–70%; always taking "each time" upgrades dies early more often than always taking "now", but clears more often. At the time of writing: random picks clear about 10% and die in section 1 about 43%
+
 ## Not decided yet
 
-- Tech stack
-- Number of squares per section and how often each square type appears
-- What exactly each square's three options are, and the list of upgrades
+- Number of squares per section and how often each square type appears (placeholders above)
+- What exactly each square's three options are, and the list of upgrades (placeholders in `balance.ts`)
 - The three bosses
-- How SPD works in auto battles
+- How SPD works in auto battles (placeholder above)
+- The art
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

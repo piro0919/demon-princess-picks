@@ -1,0 +1,8 @@
+allowBuilds:
+  lefthook: true
+  unrs-resolver: false
+
+# 出てから3日たっていない版は入れない（Renovate の共通設定と同じ待ち）。単位は分。持ち主が自分で出している包みは待たない
+minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - eslint-plugin-hollow-tests
