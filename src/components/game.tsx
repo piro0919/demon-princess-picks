@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { choose, finishBattle, newRun } from '@/game/run';
 import { LangContext } from '@/i18n/lang-context';
 import { detectLang, MESSAGES } from '@/i18n/messages';
@@ -23,9 +23,12 @@ export function Game() {
   const [battleHp, setBattleHp] = useState<number | null>(null);
   const { phase } = state;
   // この部品はブラウザでだけ描く（game-loader.tsx）ので、端末の言語設定をそのまま読める
-  const [lang] = useState(() => detectLang(navigator.languages));
+  const [lang] = useState(() =>
+    detectLang(navigator.languages?.length ? navigator.languages : [navigator.language]),
+  );
 
-  useEffect(() => {
+  // 描く前に付け替え、日本語の文字が英語の扱いで一瞬描かれるのを防ぐ
+  useLayoutEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
 

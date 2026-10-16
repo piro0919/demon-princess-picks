@@ -10,6 +10,9 @@ describe('言語', () => {
     expect(detectLang(['en-US', 'ja-JP'])).toBe('en');
     expect(detectLang(['fr-FR', 'ja-JP'])).toBe('ja');
     expect(detectLang(['fr-FR'])).toBe('en');
+    expect(detectLang(['ja_JP'])).toBe('ja');
+    expect(detectLang(['JA-jp'])).toBe('ja');
+    expect(detectLang(['jav'])).toBe('en');
     expect(detectLang([])).toBe('en');
   });
 

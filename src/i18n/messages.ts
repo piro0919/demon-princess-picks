@@ -72,6 +72,6 @@ export const MESSAGES: Record<Lang, Messages> = {
 
 /** 端末の言語設定に合わせる。日本語の設定が英語より先にあれば日本語、それ以外は英語 */
 export function detectLang(languages: readonly string[]): Lang {
-  const first = languages.find((l) => /^(ja|en)\b/i.test(l));
+  const first = languages.find((l) => /^(ja|en)([-_]|$)/i.test(l));
   return first?.toLowerCase().startsWith('ja') ? 'ja' : 'en';
 }
