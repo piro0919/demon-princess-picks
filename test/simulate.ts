@@ -1,11 +1,12 @@
 import { SECTIONS } from '../src/game/balance';
+import { Rng } from '../src/game/rng';
 import { choose, finishBattle, newRun } from '../src/game/run';
 import type { Option, RunState } from '../src/game/types';
 
 export type Bot = (state: RunState, seed: number) => number;
 
-/** 何も考えずに押す遊び方 */
-export const randomBot: Bot = (_state, seed) => seed % 3;
+/** 何も考えずに押す遊び方。三つのどれを押すかは、種から決まる乱数で選ぶ */
+export const randomBot: Bot = (_state, seed) => new Rng(seed).int(3);
 
 /** 決まった種類（今すぐ／〜するたびに）を、あれば必ず選ぶ遊び方 */
 export const preferBot =
@@ -13,7 +14,7 @@ export const preferBot =
   (state, seed) => {
     if (state.phase.kind !== 'pick') return 0;
     const i = state.phase.options.findIndex((o) => o.kind === kind);
-    return i >= 0 ? i : seed % 3;
+    return i >= 0 ? i : randomBot(state, seed);
   };
 
 /** 挑戦を最後まで遊ばせ、どこまで行けたかを返す。section は倒れた区切り */
@@ -24,7 +25,8 @@ export function playRun(seed: number, bot: Bot): { section: number; cleared: boo
     if (state.phase.kind === 'over') return { section: state.section, cleared: false };
     if (state.phase.kind === 'clear') return { section: SECTIONS, cleared: true };
     if (state.phase.kind === 'battle') state = finishBattle(state);
-    else state = choose(state, bot(state, seed + picks++));
+    // 挑戦ごとに、押すときの種が重ならないようにずらす
+    else state = choose(state, bot(state, seed * 1000 + picks++));
   }
 }
 

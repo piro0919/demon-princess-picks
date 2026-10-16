@@ -167,11 +167,15 @@ function advance(state: RunState): RunState {
  */
 function resolveRandom(luck: number, rng: Rng): { type: ResolvedSquare; lucky: boolean } {
   const extra = Math.max(0, luck) * RANDOM_LUCK_WEIGHT;
-  const weights = [
-    ...RANDOM_WEIGHTS,
-    { item: 'treasure' as const, weight: extra },
-    { item: 'heal' as const, weight: extra },
-  ];
+  // 幸運が0なら足さない。重み0の枠を残すと、計算の端で最後の枠（幸運の枠）に落ちることがある
+  const weights =
+    extra > 0
+      ? [
+          ...RANDOM_WEIGHTS,
+          { item: 'treasure' as const, weight: extra },
+          { item: 'heal' as const, weight: extra },
+        ]
+      : RANDOM_WEIGHTS;
   const { item, index } = rng.weighted(weights);
   return { type: item, lucky: index >= RANDOM_WEIGHTS.length };
 }

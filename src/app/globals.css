@@ -96,11 +96,13 @@
   }
 }
 
+/* 動きを減らす設定なら、揺れ・突進・震えを止める。傷の数は出す */
 @media (prefers-reduced-motion: reduce) {
   .fighter-hero,
-  .fighter-foe {
-    --lunge-x: 0;
-    --lunge-y: 0;
+  .fighter-foe,
+  .fighter-hero *,
+  .fighter-foe * {
+    animation: none;
   }
 }
 

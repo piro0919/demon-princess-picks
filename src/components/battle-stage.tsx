@@ -8,6 +8,8 @@ type Props = {
   result: BattleResult;
   heroHp: number;
   heroMaxHp: number;
+  /** 1手ごとに、殴られたあとの主人公の HP を知らせる */
+  onHeroHp: (hp: number) => void;
   onDone: () => void;
 };
 
@@ -15,19 +17,22 @@ type Props = {
  * 計算済みの戦闘を1手ずつ見せる。殴る側が相手に向かって突っ込み、殴られた側が揺れて傷の数が浮かぶ。
  * 絵が入るまでは、人物を名前入りの箱で表す。描き方を変えるときはこの部品だけを差し替える
  */
-export function BattleStage({ enemy, result, heroHp, heroMaxHp, onDone }: Props) {
+export function BattleStage({ enemy, result, heroHp, heroMaxHp, onHeroHp, onDone }: Props) {
   const [step, setStep] = useState(0);
   const { hits } = result;
   const hit = step > 0 ? hits[step - 1] : null;
 
   useEffect(() => {
     if (step < hits.length) {
-      const t = setTimeout(() => setStep((s) => s + 1), HIT_MS);
+      const t = setTimeout(() => {
+        onHeroHp(hits[step].heroHp);
+        setStep(step + 1);
+      }, HIT_MS);
       return () => clearTimeout(t);
     }
     const t = setTimeout(onDone, SETTLE_MS);
     return () => clearTimeout(t);
-  }, [step, hits.length, onDone]);
+  }, [step, hits, onHeroHp, onDone]);
 
   return (
     <div className="flex size-full max-w-3xl items-center justify-around gap-6 portrait:flex-col-reverse">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { choose, finishBattle, newRun } from '@/game/run';
 import { BattleStage } from './battle-stage';
 import { EndScreen } from './end-screen';
@@ -17,7 +17,15 @@ function randomSeed(): number {
 
 export function Game() {
   const [state, setState] = useState(() => newRun(randomSeed()));
+  // 戦闘の最中の主人公の HP。下の能力の欄も、戦闘の画面と同じ速さで減らす
+  const [battleHp, setBattleHp] = useState<number | null>(null);
   const { phase } = state;
+
+  // 戦闘の画面は、渡された関数が変わると1手の待ちを始めから数え直すので、同じ関数を渡し続ける
+  const onBattleDone = useCallback(() => {
+    setBattleHp(null);
+    setState(finishBattle);
+  }, []);
 
   return (
     <main className="flex h-dvh flex-col gap-3 p-3 select-none">
@@ -31,7 +39,8 @@ export function Game() {
             result={phase.result}
             heroHp={state.stats.hp}
             heroMaxHp={state.stats.maxHp}
-            onDone={() => setState((s) => finishBattle(s))}
+            onHeroHp={setBattleHp}
+            onDone={onBattleDone}
           />
         )}
         {phase.kind === 'pick' && (
@@ -50,7 +59,10 @@ export function Game() {
           />
         )}
       </section>
-      <StatsBar stats={state.stats} perks={state.perks} />
+      <StatsBar
+        stats={battleHp === null ? state.stats : { ...state.stats, hp: battleHp }}
+        perks={state.perks}
+      />
     </main>
   );
 }

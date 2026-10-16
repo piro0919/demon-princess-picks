@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { OPENING_PICKS, SQUARES_PER_SECTION } from '../src/game/balance';
+import { OPENING_PICKS, POOLS, SQUARES_PER_SECTION } from '../src/game/balance';
 import { simulateBattle } from '../src/game/battle';
 import { Rng } from '../src/game/rng';
 import { choose, finishBattle, newRun } from '../src/game/run';
@@ -103,5 +103,13 @@ describe('戦闘', () => {
     }
     expect(heroHp).toBe(hero);
     expect(won).toBe(enemy === 0);
+  });
+});
+
+describe('三択の表', () => {
+  // 三択は同じものを並べないので、表に3つ未満しか無いと引き終わらない
+  it.each(Object.entries(POOLS))('%s の表には、違う選択肢が3つ以上ある', (_name, pool) => {
+    const distinct = new Set([...pool.normal, ...pool.good].map((o) => JSON.stringify(o)));
+    expect(distinct.size).toBeGreaterThanOrEqual(3);
   });
 });

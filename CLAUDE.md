@@ -99,7 +99,7 @@ The first playable build needed values for everything below. They are placeholde
 - LUCK: each of the three slots rolls for the better list at 10% + 4% per LUCK (cap 80%); random squares turn into treasure or heal more often. A LUCK mark shows on any option or square that LUCK caused
 - "Now" options grow 60% per section; "each time" upgrades do not
 - Enemy names "Enemy A/B/C" and "Boss 1/2/3", the heroine shown as "Princess", the screen texts ("Before the journey", "Victory", "Curse", "Spring" …) and all colors
-- Balance targets the tests hold: pressing without thinking clears 3–30% of runs and dies in section 1 in 20–70%; always taking "each time" upgrades dies early more often than always taking "now", but clears more often. At the time of writing: random picks clear about 10% and die in section 1 about 43%
+- Balance targets the tests hold: pressing without thinking clears 3–30% of runs and dies in section 1 in 20–70%; always taking "each time" upgrades dies early more often than always taking "now", but clears more often. At the time of writing: random picks clear about 11% and die in section 1 about 42%. The longest battle in 2,000 runs was 110 hits, about 66 seconds to watch
 
 ## Not decided yet
 
