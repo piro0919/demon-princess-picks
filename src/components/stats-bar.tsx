@@ -1,4 +1,5 @@
-import { optionLabel } from '@/game/labels';
+import { useMessages } from '@/i18n/lang-context';
+import { optionLabel } from '@/i18n/labels';
 import type { Perk, Stats } from '@/game/types';
 import { HpBar } from './hp-bar';
 
@@ -11,6 +12,7 @@ const SHOWN = [
 
 /** 主人公の能力と、取った「〜するたびに」の強化 */
 export function StatsBar({ stats, perks }: { stats: Stats; perks: Perk[] }) {
+  const m = useMessages();
   return (
     <footer className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-3">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -28,7 +30,7 @@ export function StatsBar({ stats, perks }: { stats: Stats; perks: Perk[] }) {
         <ul className="flex flex-wrap gap-1">
           {perks.map((perk, i) => (
             <li key={i} className="rounded-full border border-line px-2 text-xs text-muted">
-              {optionLabel({ kind: 'later', perk, lucky: false })}
+              {optionLabel({ kind: 'later', perk, lucky: false }, m)}
             </li>
           ))}
         </ul>

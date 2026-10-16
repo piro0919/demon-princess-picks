@@ -1,7 +1,9 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { choose, finishBattle, newRun } from '@/game/run';
+import { LangContext } from '@/i18n/lang-context';
+import { detectLang, MESSAGES } from '@/i18n/messages';
 import { BattleStage } from './battle-stage';
 import { EndScreen } from './end-screen';
 import { PickCards } from './pick-cards';
@@ -20,6 +22,12 @@ export function Game() {
   // 戦闘の最中の主人公の HP。下の能力の欄も、戦闘の画面と同じ速さで減らす
   const [battleHp, setBattleHp] = useState<number | null>(null);
   const { phase } = state;
+  // この部品はブラウザでだけ描く（game-loader.tsx）ので、端末の言語設定をそのまま読める
+  const [lang] = useState(() => detectLang(navigator.languages));
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   // 戦闘の画面は、渡された関数が変わると1手の待ちを始めから数え直すので、同じ関数を渡し続ける
   const onBattleDone = useCallback(() => {
@@ -28,41 +36,43 @@ export function Game() {
   }, []);
 
   return (
-    <main className="flex h-dvh flex-col gap-3 p-3 select-none">
-      <RoadBar state={state} />
-      <section className="flex min-h-0 flex-1 items-center justify-center">
-        {phase.kind === 'battle' && (
-          <BattleStage
-            // マスごとに作り直し、1手目から見せる
-            key={state.visited.length}
-            enemy={phase.enemy}
-            result={phase.result}
-            heroHp={state.stats.hp}
-            heroMaxHp={state.stats.maxHp}
-            onHeroHp={setBattleHp}
-            onDone={onBattleDone}
-          />
-        )}
-        {phase.kind === 'pick' && (
-          <PickCards
-            context={phase.context}
-            options={phase.options}
-            landed={state.visited.at(-1)}
-            onPick={(i) => setState((s) => choose(s, i))}
-          />
-        )}
-        {(phase.kind === 'over' || phase.kind === 'clear') && (
-          <EndScreen
-            cleared={phase.kind === 'clear'}
-            section={state.section}
-            onRetry={() => setState(newRun(randomSeed()))}
-          />
-        )}
-      </section>
-      <StatsBar
-        stats={battleHp === null ? state.stats : { ...state.stats, hp: battleHp }}
-        perks={state.perks}
-      />
-    </main>
+    <LangContext value={MESSAGES[lang]}>
+      <main className="flex h-dvh flex-col gap-3 p-3 select-none">
+        <RoadBar state={state} />
+        <section className="flex min-h-0 flex-1 items-center justify-center">
+          {phase.kind === 'battle' && (
+            <BattleStage
+              // マスごとに作り直し、1手目から見せる
+              key={state.visited.length}
+              enemy={phase.enemy}
+              result={phase.result}
+              heroHp={state.stats.hp}
+              heroMaxHp={state.stats.maxHp}
+              onHeroHp={setBattleHp}
+              onDone={onBattleDone}
+            />
+          )}
+          {phase.kind === 'pick' && (
+            <PickCards
+              context={phase.context}
+              options={phase.options}
+              landed={state.visited.at(-1)}
+              onPick={(i) => setState((s) => choose(s, i))}
+            />
+          )}
+          {(phase.kind === 'over' || phase.kind === 'clear') && (
+            <EndScreen
+              cleared={phase.kind === 'clear'}
+              section={state.section}
+              onRetry={() => setState(newRun(randomSeed()))}
+            />
+          )}
+        </section>
+        <StatsBar
+          stats={battleHp === null ? state.stats : { ...state.stats, hp: battleHp }}
+          perks={state.perks}
+        />
+      </main>
+    </LangContext>
   );
 }

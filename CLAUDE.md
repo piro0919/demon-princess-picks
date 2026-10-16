@@ -58,6 +58,7 @@ A first playable build exists (boxes instead of art, provisional numbers). Every
 
 - **Demon Princess Picks** (owner's pick from Claude's candidates, 2026-10-17)
 - English only; no Japanese title, so search does not split the name in two
+- The screen texts come in English and Japanese (owner, 2026-10-17). The language follows the device setting; there is no switch. The title stays English in both. Stat names stay ATK, DEF, HP, SPD, LUCK in Japanese too, except Max HP (最大HP). Texts live in `src/i18n/messages.ts`
 - One web search on 2026-10-17 found no game with this name. A game with a close setting exists: "Demon Princess Retreat" (indie RPG, June 2026), also about the Demon King's daughter
 
 ### Turned down
@@ -98,7 +99,7 @@ The first playable build needed values for everything below. They are placeholde
 - Damage: ATK² / (ATK + DEF), ±15%. DEF works as a ratio, so damage never drops to zero
 - LUCK: each of the three slots rolls for the better list at 10% + 4% per LUCK (cap 80%); random squares turn into treasure or heal more often. A LUCK mark shows on any option or square that LUCK caused
 - "Now" options grow 60% per section; "each time" upgrades do not
-- Enemy names "Enemy A/B/C" and "Boss 1/2/3", the heroine shown as "Princess", the screen texts ("Before the journey", "Victory", "Curse", "Spring" …) and all colors
+- Enemy names "Enemy A/B/C" and "Boss 1/2/3", the heroine shown as "Princess", the screen texts in both languages ("Before the journey" / 旅立ちの前, "Victory" / 勝利 …) and all colors
 - Balance targets the tests hold: pressing without thinking clears 3–30% of runs and dies in section 1 in 20–70%; always taking "each time" upgrades dies early more often than always taking "now", but clears more often. At the time of writing: random picks clear about 11% and die in section 1 about 42%. The longest battle in 2,000 runs was 110 hits, about 66 seconds to watch
 
 ## Not decided yet

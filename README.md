@@ -9,6 +9,7 @@ Work in progress: the game is playable from start to finish, with boxes standing
 - Next.js (App Router) + React + TypeScript
 - Tailwind CSS
 - No server or database: a run lives entirely in the browser
+- English and Japanese, following the device language
 
 ## 🚀 Development
 
